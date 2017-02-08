@@ -1,0 +1,44 @@
+Workflow Paired End reads:
+1) Preprocessing using Trimmomatic. 
+a. You can use trimmomatic_ITS.pl but you have to talk to me first.
+2) Create the treatment.file file exactly the way you do for mothur
+3) Use the ITS-processing.pl script, usage:
+a. perl ITS-processing.pl treatment.file number_of_processors (a number between 1 and 64)
+b. You will have multiple output files the two you will want to make sure that stay around are: treatment.contigs.good.groups and treatment.trim.contigs.good.fasta
+4) Use vsearch-pipleine.pl, usage:
+a. Perl vsearch-pipeline.pl treatment.trim.contigs.good.fasta directory_name (you chose this)
+b. Output is vsearch.cent0.03.fa and vsearch.cent0.03.uchime.fa
+5) Change directory to directory_name and:
+a. Type: ls > otu.file
+b. This will absorb all the OTU names from that directory and put them in a file called otu.file.
+6) Make sure that otu.file includes only out names and no other file names before you go to the next step. 
+7) Use cluster.pl to create you csv file that you will use with R, usage:
+a. perl custer.pl treatment.file otu.file treatment.contigs.good.groups directory_name file.csv 
+b. directory_name is same as the one you chose above and file.csv is a file name you choose.
+8) Use chimera_cleanup.pl to filter out the chimera free OTUs, usage:
+a. perl chimera_cleanup.pl vsearch.cent0.03.fa otu.file vsearch.cent0.03.uchime.fa new_otu.file
+b. new_otu.file is a name you choose to filter out the nonchimeric OTUs
+
+Workflow Single End reads:
+1) Preprocessing using Trimmomatic. 
+2) Create the treatment.file file exactly the way you do for mothur
+3) Use fasta.create.pl to make the fasta and groups files needed as in the previous pipeline, usage:
+a. perl fasta.create.pl treatment.file somename.fasta somename.groups
+b. The files have to be those processed using trimommatic
+4) Use vsearch-pipleine.pl, usage:
+a. Perl vsearch-pipeline.pl treatment.trim.contigs.good.fasta directory_name (you chose this)
+b. Output is vsearch.cent0.03.fa and vsearch.cent0.03.uchime.fa
+5) Change directory to directory_name and:
+a. Type: ls > otu.file
+b. This will absorb all the OTU names from that directory and put them in a file called otu.file.
+6) Make sure that otu.file includes only out names and no other file names before you go to the next step. 
+7) Use cluster.pl to create you csv file that you will use with R, usage:
+a. perl custer.pl treatment.file otu.file treatment.contigs.good.groups directory_name file.csv 
+b. directory_name is same as the one you chose above and file.csv is a file name you choose.
+8) Use chimera_cleanup.pl to filter out the chimera free OTUs, usage:
+a. perl chimera_cleanup.pl vsearch.cent0.03.fa otu.file vsearch.cent0.03.uchime.fa new_otu.file
+b. new_otu.file is a name you choose to filter out the nonchimeric OTUs
+
+
+Blast:
+blastn –task blastn –query in_file.fasta –db nt –out outfile –num_threads 4
